@@ -21,3 +21,4 @@ uSD_y = (-pcb_w/2) - 0.71;
 tmc_l = 20.32;
 tmc_w = 15.24;
 tmc_t = 1.6;
+tmc_offset_from_pcb = 11.05;
