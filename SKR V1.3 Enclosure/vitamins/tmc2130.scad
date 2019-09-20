@@ -11,11 +11,11 @@ module heatsink() {
     hs_w = 9.0;
     hs_h = 12.0;
 
-    num_fin_x = 5;
-    num_fin_y = 3;
-    fin_spacing_x = 1;
+    num_fin_y = 5;
+    num_fin_x = 3;
+    fin_spacing_x = 1.3;
     fin_thickness_x = (hs_l - ((num_fin_x-1)*fin_spacing_x))/num_fin_x;
-    fin_spacing_y = 1;
+    fin_spacing_y = 1.45;
     fin_thickness_y = (hs_w - ((num_fin_y-1)*fin_spacing_y))/num_fin_y;
 
     color("Blue") difference() {
