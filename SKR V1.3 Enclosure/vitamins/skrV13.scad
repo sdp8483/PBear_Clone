@@ -69,15 +69,17 @@ module uSD() {
 }
 
 module skrV13() {
-    pcb();
+    translate([pcb_l/2,pcb_w/2,0]) {
+        pcb();
 
-    translate([usb_x,usb_y,pcb_t])usb_b_jack();
+        translate([usb_x,usb_y,pcb_t])usb_b_jack();
 
-    translate([uSD_x,uSD_y,pcb_t])uSD();
+        translate([uSD_x,uSD_y,pcb_t])uSD();
 
-    for (n = [0:4]) {
-        pos = (tmc_l * n) + ((pcb_l - (tmc_l*5))/5)*n;
-        translate([(-pcb_l/2) + pos, (pcb_w/2) - 23.4,pcb_t])TMC2130();
+        for (n = [0:4]) {
+            pos = (tmc_l * n) + ((pcb_l - (tmc_l*5))/5)*n;
+            translate([(-pcb_l/2) + pos, (pcb_w/2) - 23.4,pcb_t])TMC2130();
+        }
     }
 }
 
