@@ -3,5 +3,5 @@ use <../parts/enclosure_back.scad>
 use <../vitamins/skrV13.scad>
 
 
-enclosure_back();
+enclosure_chamfered();
 translate([x_clearance-4.1,0,7+2.5])skrV13();

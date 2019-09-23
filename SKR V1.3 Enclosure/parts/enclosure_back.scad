@@ -134,6 +134,40 @@ module y_cable_holder() {
     }
 }
 
+module cable_tie_anchors() {
+    difference() {
+        // main body
+        translate([0,2.5,0]) {
+            rotate([90,0,0])linear_extrude(height=5)polygon([[0,-2.5],[3,-0.5],[3,2],[0,3]]);
+        }
+
+        // tie holes
+        translate([0.5,-1.5,0])cube([1.5,3,5]);
+        translate([0.5,-1.5,0])cube([10,3,1.5]);
+    }
+}
+
+module lid_nut_holder() {
+    translate([0,0,-4])difference() {
+        union() {
+            cube([7,7,4]);
+            translate([0,0,-10])cylinder(h=10,r1=0,r2=sqrt(2*pow(7,2)), $fn=8);
+        }
+
+        // nut cut
+        translate([7-5.6,7-5.6,1]) {
+            cube([5.7,5.7,2]);
+            translate([5.6/2,5.6/2,-3])cylinder(h=20, d=m3_clearance_dia);
+        }
+
+        // support cuts
+        translate([7,-10,-10])cube([4,20,20]);
+        translate([-10,7,-10])cube([20,4,20]);
+        translate([-15,-10,-10])cube([15,20,20]);
+        translate([-10,-15,-10])cube([20,15,20]);
+    }
+}
+
 module enclosure_back() {
     union() {
         difference() {
@@ -183,11 +217,9 @@ module enclosure_back() {
         rotate([0,270,0])extruder_cable_holder();
     }
 
-    wall_height = 38;
-
     // top wall
     difference() {
-        translate([-4,0,0])cube([4,pcb_w+y_clearance+1,wall_height]);
+        translate([-4,0,0])cube([4,pcb_w+y_clearance,wall_height]);
         translate([-5,40-(16/2),22])cube([6,16,20]);
         translate([-8,40-(20/2),22])cube([6,20,20]);
     }
@@ -196,15 +228,15 @@ module enclosure_back() {
     translate([pcb_l+x_clearance,0,0])cube([4,pcb_w+y_clearance,wall_height]);
 
     // add y cable grip
-    translate([15,0,30])rotate([0,270,90])y_cable_holder();
+    translate([pcb_l+x_clearance-35,0,30])rotate([0,270,90])y_cable_holder();
 
     // USB/uSD side wall
     difference() {
         translate([-4,-4,0])cube([pcb_l+x_clearance+4+4,4,wall_height]);
 
         // cuts for cable grip
-        translate([1,-5,30])cube([28,6,10]);
-        translate([2,-5,25])cube([24,6,10]);
+        translate([pcb_l+x_clearance-35-(28/2),-5,30])cube([28,6,10]);
+        translate([pcb_l+x_clearance-35-(24/2),-5,25])cube([24,6,10]);
 
         // cuts for USB/uSD
         translate([x_clearance-3.91+24.11-2,-5,9.5])cube([36.09-24.11+4,6,14]);
@@ -214,6 +246,49 @@ module enclosure_back() {
     // stepper driver side wall
     translate([-4,pcb_w+y_clearance,0])cube([pcb_l+x_clearance+4+4,4,wall_height]);
 
+    // upper wall cable tie anchors
+    translate([0,20,25])cable_tie_anchors();
+    translate([0,70,25])cable_tie_anchors();
+    // stepper driver wall cable tie anchors
+    for (i=[20:30:pcb_l+x_clearance-20]) {
+        translate([i,pcb_w+y_clearance,25])rotate(270)cable_tie_anchors();
+    }
+    // usb wall cable tie anchors
+    for (i=[36:30:pcb_l+x_clearance]) {
+        translate([i,0,25])rotate(90)cable_tie_anchors();
+    }
+    // bottom wall cable tie anchors
+    for (i=[15:30:pcb_w+y_clearance]) {
+        translate([pcb_l+x_clearance,i,25])rotate(180)cable_tie_anchors();
+    }
+    // base cable tie anchors
+    for (i=[10:30:pcb_w+y_clearance]) {
+        translate([x_clearance/2,i,8])rotate([0,270,0])cable_tie_anchors();
+    }
+
+    // Lid nuts
+    translate([0,0,wall_height-1])lid_nut_holder();
 }
 
-enclosure_back();
+module enclosure_chamfered() {
+    difference() {
+        enclosure_back();
+
+        // top wall chamfer
+        translate([0,45,wall_height+6])rotate([0,45,0])cube([5,100,20],center=true);
+
+        // bottom wall chamfer
+        translate([pcb_l+x_clearance,45,wall_height+6])rotate([0,315,0])cube([5,100,20],center=true);
+
+        // usb wall chamfer
+        translate([45,0,wall_height+6])rotate([315,0,0])cube([200,5,20],center=true);
+
+        // stepper driver wall chamfer
+        translate([45,pcb_w+y_clearance,wall_height+6])rotate([45,0,0])cube([200,5,20],center=true);
+
+    }
+
+}
+
+enclosure_chamfered();
+

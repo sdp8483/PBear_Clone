@@ -29,3 +29,4 @@ pcb_mnt_pattern = [[0,0],[hole_x_spacing,0],[0,hole_y_spacing],[hole_x_spacing,h
 x_clearance = 25;
 y_clearance = 3;
 m3_clearance_dia = 3.2;
+wall_height = 38;
