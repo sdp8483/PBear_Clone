@@ -267,7 +267,7 @@ module enclosure_back() {
     }
 
     // Lid nuts
-    translate([0,0,wall_height-1])lid_nut_holder();
+    //translate([0,0,wall_height-1])lid_nut_holder();
 }
 
 module enclosure_chamfered() {
