@@ -1,5 +1,5 @@
 // Defualt Quality
-$fn = 25;
+$fn = 50;
 
 // PCB Dimensions - mm
 pcb_l = 109.67;

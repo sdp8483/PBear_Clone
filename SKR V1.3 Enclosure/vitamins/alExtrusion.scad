@@ -1,4 +1,4 @@
-$fn = 25;
+include <../settings/dimensions.scad>
 
 module alExt_2040(l) {
     translate([l/2,20,10]) {
