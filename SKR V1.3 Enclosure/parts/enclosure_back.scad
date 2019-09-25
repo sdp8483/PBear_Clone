@@ -1,6 +1,5 @@
 include <../settings/dimensions.scad>
 use <../settings/mods.scad>
-use <../vitamins/fasteners.scad> // for preview
 
 module single_extrusion_rail_mount(bolt_hole) {
     union() {
@@ -168,7 +167,7 @@ module lid_nut_holder() {
     }
 }
 
-module enclosure_back() {
+module enclosure_body() {
     union() {
         difference() {
             union() {
@@ -265,14 +264,11 @@ module enclosure_back() {
     for (i=[10:30:pcb_w+y_clearance]) {
         translate([x_clearance/2,i,8])rotate([0,270,0])cable_tie_anchors();
     }
-
-    // Lid nuts
-    //translate([0,0,wall_height-1])lid_nut_holder();
 }
 
 module enclosure_chamfered() {
     difference() {
-        enclosure_back();
+        enclosure_body();
 
         // top wall chamfer
         translate([0,45,wall_height+6])rotate([0,45,0])cube([5,100,20],center=true);
@@ -290,5 +286,32 @@ module enclosure_chamfered() {
 
 }
 
-enclosure_chamfered();
+module enclosure_back() {
+    difference() {
+        union() {
+            enclosure_chamfered();
 
+            // Screw supports
+            for (x=[0,pcb_l+x_clearance]) {
+                for (y=[0,pcb_w+y_clearance]) {
+                    translate([x,y,wall_height-21-3])cylinder(h=21, d=6);
+                    translate([x,y,wall_height-21-3])sphere(d=6);
+                }
+            }
+        }
+
+        // Power cable, yaxis/ zaxis entry
+        translate([130,24,31])rotate([0,90,0])cylinder(h=10, d=8.25, $fn=8);
+        translate([130,24,31-(8.25/2)])cube([10,10,8.25]);
+        translate([130,34,31])rotate([0,90,0])cylinder(h=10, d=8.25, $fn=8);
+
+        // Lid Screw Holes
+        translate([0,0,wall_height-20])cylinder(h=21, d=3);
+        translate([pcb_l+x_clearance,0,wall_height-20])cylinder(h=21, d=3);
+        translate([0,pcb_w+y_clearance,wall_height-20])cylinder(h=21, d=3);
+        translate([pcb_l+x_clearance,pcb_w+y_clearance,wall_height-20])cylinder(h=21, d=3);
+    }
+
+}
+
+enclosure_back();
