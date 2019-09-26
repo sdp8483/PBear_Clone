@@ -256,10 +256,10 @@ module enclosure_body() {
     for (i=[36:30:pcb_l+x_clearance]) {
         translate([i,0,25])rotate(90)cable_tie_anchors();
     }
-    // bottom wall cable tie anchors
+    /*// bottom wall cable tie anchors
     for (i=[15:30:pcb_w+y_clearance]) {
         translate([pcb_l+x_clearance,i,25])rotate(180)cable_tie_anchors();
-    }
+    }*/
     // base cable tie anchors
     for (i=[10:30:pcb_w+y_clearance]) {
         translate([x_clearance/2,i,8])rotate([0,270,0])cable_tie_anchors();
@@ -301,9 +301,7 @@ module enclosure_back() {
         }
 
         // Power cable, yaxis/ zaxis entry
-        translate([130,24,31])rotate([0,90,0])cylinder(h=10, d=8.25, $fn=8);
-        translate([130,24,31-(8.25/2)])cube([10,10,8.25]);
-        translate([130,34,31])rotate([0,90,0])cylinder(h=10, d=8.25, $fn=8);
+        translate([pcb_l+x_clearance-1,10,20])cube([8,pcb_w+y_clearance-20,30]);
 
         // Lid Screw Holes
         translate([0,0,wall_height-20])cylinder(h=21, d=3);
