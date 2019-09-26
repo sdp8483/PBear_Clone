@@ -1,2 +1,5 @@
 # Temp FreeCAD Files
 *.FCStd1
+
+#OSX files
+*.DS_Store
