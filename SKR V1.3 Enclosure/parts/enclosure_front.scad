@@ -25,7 +25,7 @@ module enclosure_front() {
                 }
 
                 // X axis cable entry
-                translate([125,(8.5/2)+1,-1])cylinder(h=6, d=8.5, $fn=8);
+                //translate([125,(8.5/2)+1,-1])cylinder(h=6, d=8.5, $fn=8);
 
                 // Vents
                 for (i=[5:5:80]) {
