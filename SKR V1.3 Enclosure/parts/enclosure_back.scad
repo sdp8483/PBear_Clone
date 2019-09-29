@@ -146,27 +146,6 @@ module cable_tie_anchors() {
     }
 }
 
-module lid_nut_holder() {
-    translate([0,0,-4])difference() {
-        union() {
-            cube([7,7,4]);
-            translate([0,0,-10])cylinder(h=10,r1=0,r2=sqrt(2*pow(7,2)), $fn=8);
-        }
-
-        // nut cut
-        translate([7-5.6,7-5.6,1]) {
-            cube([5.7,5.7,2]);
-            translate([5.6/2,5.6/2,-3])cylinder(h=20, d=m3_clearance_dia);
-        }
-
-        // support cuts
-        translate([7,-10,-10])cube([4,20,20]);
-        translate([-10,7,-10])cube([20,4,20]);
-        translate([-15,-10,-10])cube([15,20,20]);
-        translate([-10,-15,-10])cube([20,15,20]);
-    }
-}
-
 module enclosure_body() {
     union() {
         difference() {
