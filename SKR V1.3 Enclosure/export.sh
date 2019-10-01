@@ -10,5 +10,7 @@ echo "... extruder_clamp.scad"
 openscad -o stl/extruder_clamp.stl parts/extruder_clamp.scad
 echo "... y_clamp.scad"
 openscad -o stl/y_clamp.stl parts/y_clamp.scad
+echo "... fan_guard.scad"
+openscad -o stl/fan_guard.stl parts/fan_guard.scad
 
 echo "DONE!"
