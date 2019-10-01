@@ -28,6 +28,7 @@
 #include "../../../Marlin.h"
 #include "../../../module/motion.h"
 #include "../../../module/temperature.h"
+#include "../../../libs/point_t.h"
 
 #if EXTRUDERS > 1
   #include "../../../module/tool_change.h"
@@ -56,11 +57,11 @@
  *  Default values are used for omitted arguments.
  */
 void GcodeSuite::M701() {
-  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+  point_t park_point = NOZZLE_PARK_POINT;
 
   #if ENABLED(NO_MOTION_BEFORE_HOMING)
-    // Don't raise Z if the machine isn't homed
-    if (axes_need_homing()) park_point.z = 0;
+    // Only raise Z if the machine is homed
+    if (axis_unhomed_error()) park_point.z = 0;
   #endif
 
   #if ENABLED(MIXING_EXTRUDER)
@@ -96,7 +97,7 @@ void GcodeSuite::M701() {
 
   // Lift Z axis
   if (park_point.z > 0)
-    do_blocking_move_to_z(_MIN(current_position.z + park_point.z, Z_MAX_POS), feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
+    do_blocking_move_to_z(_MIN(current_position[Z_AXIS] + park_point.z, Z_MAX_POS), NOZZLE_PARK_Z_FEEDRATE);
 
   // Load filament
   #if ENABLED(PRUSA_MMU2)
@@ -115,7 +116,7 @@ void GcodeSuite::M701() {
 
   // Restore Z axis
   if (park_point.z > 0)
-    do_blocking_move_to_z(_MAX(current_position.z - park_point.z, 0), feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
+    do_blocking_move_to_z(_MAX(current_position[Z_AXIS] - park_point.z, 0), NOZZLE_PARK_Z_FEEDRATE);
 
   #if EXTRUDERS > 1 && DISABLED(PRUSA_MMU2)
     // Restore toolhead if it was changed
@@ -145,11 +146,11 @@ void GcodeSuite::M701() {
  *  Default values are used for omitted arguments.
  */
 void GcodeSuite::M702() {
-  xyz_pos_t park_point = NOZZLE_PARK_POINT;
+  point_t park_point = NOZZLE_PARK_POINT;
 
   #if ENABLED(NO_MOTION_BEFORE_HOMING)
-    // Don't raise Z if the machine isn't homed
-    if (axes_need_homing()) park_point.z = 0;
+    // Only raise Z if the machine is homed
+    if (axis_unhomed_error()) park_point.z = 0;
   #endif
 
   #if ENABLED(MIXING_EXTRUDER)
@@ -195,7 +196,7 @@ void GcodeSuite::M702() {
 
   // Lift Z axis
   if (park_point.z > 0)
-    do_blocking_move_to_z(_MIN(current_position.z + park_point.z, Z_MAX_POS), feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
+    do_blocking_move_to_z(_MIN(current_position[Z_AXIS] + park_point.z, Z_MAX_POS), NOZZLE_PARK_Z_FEEDRATE);
 
   // Unload filament
   #if ENABLED(PRUSA_MMU2)
@@ -225,7 +226,7 @@ void GcodeSuite::M702() {
 
   // Restore Z axis
   if (park_point.z > 0)
-    do_blocking_move_to_z(_MAX(current_position.z - park_point.z, 0), feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
+    do_blocking_move_to_z(_MAX(current_position[Z_AXIS] - park_point.z, 0), NOZZLE_PARK_Z_FEEDRATE);
 
   #if EXTRUDERS > 1 && DISABLED(PRUSA_MMU2)
     // Restore toolhead if it was changed

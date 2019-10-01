@@ -245,7 +245,7 @@ Temperature thermalManager;
       int16_t Temperature::maxtemp_raw_CHAMBER = HEATER_CHAMBER_RAW_HI_TEMP;
     #endif
     #if WATCH_CHAMBER
-      heater_watch_t Temperature::watch_chamber{0};
+      heater_watch_t Temperature::watch_chamber = { 0 };
     #endif
     millis_t Temperature::next_chamber_check_ms;
   #endif // HAS_HEATED_CHAMBER
@@ -500,7 +500,7 @@ volatile bool Temperature::temp_meas_ready = false;
 
       // Did the temperature overshoot very far?
       #ifndef MAX_OVERSHOOT_PID_AUTOTUNE
-        #define MAX_OVERSHOOT_PID_AUTOTUNE 30
+        #define MAX_OVERSHOOT_PID_AUTOTUNE 20
       #endif
       if (current_temp > target + MAX_OVERSHOOT_PID_AUTOTUNE) {
         SERIAL_ECHOLNPGM(MSG_PID_TEMP_TOO_HIGH);
@@ -665,10 +665,10 @@ int16_t Temperature::getHeaterPower(const heater_ind_t heater_id) {
         , AUTO_2_IS_0 ? 0 : AUTO_2_IS_1 ? 1 : 2
       #endif
       #if HOTENDS > 3
-        , AUTO_3_IS_0 ? 0 : AUTO_3_IS_1 ? 1 : AUTO_3_IS_2 ? 2 : 3
+        , AUTO_3_IS_0 ? 0 : AUTO_3_IS_1 ? 1 : AUTO_3_IS_2 ? 2 : 3,
       #endif
       #if HOTENDS > 4
-        , AUTO_4_IS_0 ? 0 : AUTO_4_IS_1 ? 1 : AUTO_4_IS_2 ? 2 : AUTO_4_IS_3 ? 3 : 4
+        , AUTO_4_IS_0 ? 0 : AUTO_4_IS_1 ? 1 : AUTO_4_IS_2 ? 2 : AUTO_4_IS_3 ? 3 : 4,
       #endif
       #if HOTENDS > 5
         , AUTO_5_IS_0 ? 0 : AUTO_5_IS_1 ? 1 : AUTO_5_IS_2 ? 2 : AUTO_5_IS_3 ? 3 : AUTO_5_IS_4 ? 4 : 5
@@ -813,8 +813,15 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
 
 #if HOTENDS
 
-  float Temperature::get_pid_output_hotend(const uint8_t E_NAME) {
+  float Temperature::get_pid_output_hotend(const uint8_t e) {
+    #if HOTENDS == 1
+      #define _HOTEND_TEST true
+    #else
+      #define _HOTEND_TEST (e == active_extruder)
+    #endif
+    E_UNUSED();
     const uint8_t ee = HOTEND_INDEX;
+    float pid_output;
     #if ENABLED(PIDTEMP)
       #if DISABLED(PID_OPENLOOP)
         static hotend_pid_t work_pid[HOTENDS];
@@ -822,8 +829,6 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
                      temp_dState[HOTENDS] = { 0 };
         static bool pid_reset[HOTENDS] = { false };
         const float pid_error = temp_hotend[ee].target - temp_hotend[ee].celsius;
-
-        float pid_output;
 
         if (temp_hotend[ee].target == 0
           || pid_error < -(PID_FUNCTIONAL_RANGE)
@@ -854,13 +859,8 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
           pid_output = work_pid[ee].Kp + work_pid[ee].Ki + work_pid[ee].Kd + float(MIN_POWER);
 
           #if ENABLED(PID_EXTRUSION_SCALING)
-            #if HOTENDS == 1
-              constexpr bool this_hotend = true;
-            #else
-              const bool this_hotend = (e == active_extruder);
-            #endif
             work_pid[ee].Kc = 0;
-            if (this_hotend) {
+            if (_HOTEND_TEST) {
               const long e_position = stepper.position(E_AXIS);
               if (e_position > last_e_position) {
                 lpq[lpq_ptr] = e_position - last_e_position;
@@ -894,7 +894,6 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
             MSG_PID_DEBUG_OUTPUT, pid_output
           );
           #if DISABLED(PID_OPENLOOP)
-          {
             SERIAL_ECHOPAIR(
               MSG_PID_DEBUG_PTERM, work_pid[ee].Kp,
               MSG_PID_DEBUG_ITERM, work_pid[ee].Ki,
@@ -903,7 +902,6 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
                 , MSG_PID_DEBUG_CTERM, work_pid[ee].Kc
               #endif
             );
-          }
           #endif
           SERIAL_EOL();
         }
@@ -912,11 +910,12 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
     #else // No PID enabled
 
       #if HEATER_IDLE_HANDLER
-        const bool is_idling = hotend_idle[ee].timed_out;
+        #define _TIMED_OUT_TEST hotend_idle[ee].timed_out
       #else
-        constexpr bool is_idling = false;
+        #define _TIMED_OUT_TEST false
       #endif
-      const float pid_output = (!is_idling && temp_hotend[ee].celsius < temp_hotend[ee].target) ? BANG_MAX : 0;
+      pid_output = (!_TIMED_OUT_TEST && temp_hotend[ee].celsius < temp_hotend[ee].target) ? BANG_MAX : 0;
+      #undef _TIMED_OUT_TEST
 
     #endif
 
@@ -931,7 +930,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
 
     #if DISABLED(PID_OPENLOOP)
 
-      static PID_t work_pid{0};
+      static PID_t work_pid = { 0 };
       static float temp_iState = 0, temp_dState = 0;
       static bool pid_reset = true;
       float pid_output = 0;
@@ -943,7 +942,7 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
         pid_reset = true;
       }
       else if (pid_error > PID_FUNCTIONAL_RANGE) {
-        pid_output = MAX_BED_POWER;
+        pid_output = BANG_MAX;
         pid_reset = true;
       }
       else {
@@ -971,7 +970,6 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
     #endif // PID_OPENLOOP
 
     #if ENABLED(PID_BED_DEBUG)
-    {
       SERIAL_ECHO_START();
       SERIAL_ECHOLNPAIR(
         " PID_BED_DEBUG : Input ", temp_bed.celsius, " Output ", pid_output,
@@ -981,7 +979,6 @@ void Temperature::min_temp_error(const heater_ind_t heater) {
           MSG_PID_DEBUG_DTERM, work_pid.Kd,
         #endif
       );
-    }
     #endif
 
     return pid_output;
@@ -1002,7 +999,7 @@ void Temperature::manage_heater() {
 
   #if EARLY_WATCHDOG
     // If thermal manager is still not running, make sure to at least reset the watchdog!
-    if (!inited) return watchdog_refresh();
+    if (!inited) return watchdog_reset();
   #endif
 
   #if BOTH(PROBING_HEATERS_OFF, BED_LIMIT_SWITCHING)
@@ -1520,8 +1517,10 @@ void Temperature::updateTemperaturesFromRawValues() {
     filwidth.update_measured_mm();
   #endif
 
-  // Reset the watchdog on good temperature measurement
-  watchdog_refresh();
+  #if ENABLED(USE_WATCHDOG)
+    // Reset the watchdog after we know we have a temperature measurement.
+    watchdog_reset();
+  #endif
 
   temp_meas_ready = false;
 }
@@ -1813,7 +1812,8 @@ void Temperature::init() {
    * their target temperature by a configurable margin.
    * This is called when the temperature is set. (M104, M109)
    */
-  void Temperature::start_watching_hotend(const uint8_t E_NAME) {
+  void Temperature::start_watching_hotend(const uint8_t e) {
+    E_UNUSED();
     const uint8_t ee = HOTEND_INDEX;
     if (degTargetHotend(ee) && degHotend(ee) < degTargetHotend(ee) - (WATCH_TEMP_INCREASE + TEMP_HYSTERESIS + 1)) {
       watch_hotend[ee].target = degHotend(ee) + WATCH_TEMP_INCREASE;
@@ -2932,14 +2932,11 @@ void Temperature::isr() {
   #if HOTENDS && HAS_DISPLAY
     void Temperature::set_heating_message(const uint8_t e) {
       const bool heating = isHeatingHotend(e);
-      ui.status_printf_P(0,
-        #if HOTENDS > 1
-          PSTR("E%c " S_FMT), '1' + e
-        #else
-          PSTR("E " S_FMT)
-        #endif
-        , heating ? PSTR(MSG_HEATING) : PSTR(MSG_COOLING)
-      );
+      #if HOTENDS > 1
+        ui.status_printf_P(0, heating ? PSTR("E%c " MSG_HEATING) : PSTR("E%c " MSG_COOLING), '1' + e);
+      #else
+        ui.set_status_P(heating ? PSTR("E " MSG_HEATING) : PSTR("E " MSG_COOLING));
+      #endif
     }
   #endif
 

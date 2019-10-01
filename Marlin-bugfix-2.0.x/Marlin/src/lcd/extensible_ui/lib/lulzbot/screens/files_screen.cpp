@@ -41,15 +41,21 @@ void FilesScreen::onEntry() {
   BaseScreen::onEntry();
 }
 
-const char *FilesScreen::getSelectedFilename(bool longName) {
+const char *FilesScreen::getSelectedShortFilename() {
   FileList files;
-  files.seek(getSelectedFileIndex(), true);
-  return longName ? files.longFilename() : files.shortFilename();
+  files.seek(getFileForTag(screen_data.FilesScreen.selected_tag), true);
+  return files.shortFilename();
+}
+
+const char *FilesScreen::getSelectedLongFilename() {
+  FileList files;
+  files.seek(getFileForTag(screen_data.FilesScreen.selected_tag), true);
+  return files.longFilename();
 }
 
 void FilesScreen::drawSelectedFile() {
   FileList files;
-  files.seek(getSelectedFileIndex(), true);
+  files.seek(getFileForTag(screen_data.FilesScreen.selected_tag), true);
   screen_data.FilesScreen.flags.is_dir = files.isDir();
   drawFileButton(
     files.filename(),
@@ -57,10 +63,6 @@ void FilesScreen::drawSelectedFile() {
     screen_data.FilesScreen.flags.is_dir,
     true
   );
-}
-
-uint16_t FilesScreen::getSelectedFileIndex() {
-  return getFileForTag(screen_data.FilesScreen.selected_tag);
 }
 
 uint16_t FilesScreen::getFileForTag(uint8_t tag) {
@@ -211,7 +213,9 @@ bool FilesScreen::onTouchEnd(uint8_t tag) {
       }
       break;
     case 243:
-      ConfirmStartPrintDialogBox::show(getSelectedFileIndex());
+      printFile(getSelectedShortFilename());
+      StatusScreen::setStatusMessage(GET_TEXTF(PRINT_STARTING));
+      GOTO_SCREEN(StatusScreen);
       return true;
     case 244:
       {

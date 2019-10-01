@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../inc/MarlinConfigPre.h"
+#include "../core/enum.h"
 
 #if IS_CORE || EITHER(BABYSTEP_XY, I2C_POSITION_ENCODERS)
   #define BS_TODO_AXIS(A) A
@@ -29,7 +30,7 @@
   #define BS_TODO_AXIS(A) 0
 #endif
 
-#if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+#if (HAS_LCD_MENU || ENABLED(EXTENSIBLE_UI)) && ENABLED(BABYSTEP_DISPLAY_TOTAL)
   #if ENABLED(BABYSTEP_XY)
     #define BS_TOTAL_AXIS(A) A
   #else
@@ -40,17 +41,22 @@
 class Babystep {
 public:
   static volatile int16_t steps[BS_TODO_AXIS(Z_AXIS) + 1];
-  static int16_t accum;                                     // Total babysteps in current edit
 
-  #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
-    static int16_t axis_total[BS_TOTAL_AXIS(Z_AXIS) + 1];   // Total babysteps since G28
-    static inline void reset_total(const AxisEnum axis) {
-      if (true
-        #if ENABLED(BABYSTEP_XY)
-          && axis == Z_AXIS
-        #endif
-      ) axis_total[BS_TOTAL_AXIS(axis)] = 0;
-    }
+  #if HAS_LCD_MENU || ENABLED(EXTENSIBLE_UI)
+
+    static int16_t accum;                                     // Total babysteps in current edit
+
+    #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+      static int16_t axis_total[BS_TOTAL_AXIS(Z_AXIS) + 1];   // Total babysteps since G28
+      static inline void reset_total(const AxisEnum axis) {
+        if (true
+          #if ENABLED(BABYSTEP_XY)
+            && axis == Z_AXIS
+          #endif
+        ) axis_total[BS_TOTAL_AXIS(axis)] = 0;
+      }
+    #endif
+
   #endif
 
   static void add_steps(const AxisEnum axis, const int16_t distance);

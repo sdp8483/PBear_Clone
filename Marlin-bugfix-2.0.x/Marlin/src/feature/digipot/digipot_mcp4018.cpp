@@ -24,6 +24,7 @@
 
 #if BOTH(DIGIPOT_I2C, DIGIPOT_MCP4018)
 
+#include "../../core/enum.h"
 #include "Stream.h"
 #include "utility/twi.h"
 #include <SlowSoftI2CMaster.h>  //https://github.com/stawel/SlowSoftI2CMaster

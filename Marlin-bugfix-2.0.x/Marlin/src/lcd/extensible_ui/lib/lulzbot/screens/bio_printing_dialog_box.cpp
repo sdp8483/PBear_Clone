@@ -130,7 +130,7 @@ void BioPrintingDialogBox::setStatusMessage(const char* message) {
   draw_interaction_buttons(BACKGROUND);
   storeBackground();
 
-  #if ENABLED(TOUCH_UI_DEBUG)
+  #ifdef UI_FRAMEWORK_DEBUG
     SERIAL_ECHO_START();
     SERIAL_ECHOLNPAIR("New status message: ", message);
   #endif
@@ -141,7 +141,6 @@ void BioPrintingDialogBox::setStatusMessage(const char* message) {
 }
 
 void BioPrintingDialogBox::onIdle() {
-  reset_menu_timeout();
   if (refresh_timer.elapsed(STATUS_UPDATE_INTERVAL)) {
     onRefresh();
     refresh_timer.start();

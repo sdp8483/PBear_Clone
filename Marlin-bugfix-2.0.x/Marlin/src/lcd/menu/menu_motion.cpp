@@ -92,26 +92,26 @@ static void _lcd_move_xyz(PGM_P name, AxisEnum axis) {
       if (soft_endstops_enabled) switch (axis) {
         case X_AXIS:
           #if ENABLED(MIN_SOFTWARE_ENDSTOP_X)
-            min = soft_endstop.min.x;
+            min = soft_endstop[X_AXIS].min;
           #endif
           #if ENABLED(MAX_SOFTWARE_ENDSTOP_X)
-            max = soft_endstop.max.x;
+            max = soft_endstop[X_AXIS].max;
           #endif
           break;
         case Y_AXIS:
           #if ENABLED(MIN_SOFTWARE_ENDSTOP_Y)
-            min = soft_endstop.min.y;
+            min = soft_endstop[Y_AXIS].min;
           #endif
           #if ENABLED(MAX_SOFTWARE_ENDSTOP_Y)
-            max = soft_endstop.max.y;
+            max = soft_endstop[Y_AXIS].max;
           #endif
           break;
         case Z_AXIS:
           #if ENABLED(MIN_SOFTWARE_ENDSTOP_Z)
-            min = soft_endstop.min.z;
+            min = soft_endstop[Z_AXIS].min;
           #endif
           #if ENABLED(MAX_SOFTWARE_ENDSTOP_Z)
-            max = soft_endstop.max.z;
+            max = soft_endstop[Z_AXIS].max;
           #endif
         default: break;
       }
@@ -173,7 +173,7 @@ void lcd_move_z() { _lcd_move_xyz(PSTR(MSG_MOVE_Z), Z_AXIS); }
         #if IS_KINEMATIC
           manual_move_offset += diff;
         #else
-          current_position.e += diff;
+          current_position[E_AXIS] += diff;
         #endif
         manual_move_to_current(E_AXIS
           #if E_MANUAL > 1
@@ -207,7 +207,7 @@ void lcd_move_z() { _lcd_move_xyz(PSTR(MSG_MOVE_Z), Z_AXIS); }
         }
       #endif // E_MANUAL > 1
 
-      draw_edit_screen(pos_label, ftostr41sign(current_position.e
+      draw_edit_screen(pos_label, ftostr41sign(current_position[E_AXIS]
         #if IS_KINEMATIC
           + manual_move_offset
         #endif
@@ -262,14 +262,14 @@ void _menu_move_distance(const AxisEnum axis, const screenFunc_t func, const int
   START_MENU();
   if (LCD_HEIGHT >= 4) {
     switch (axis) {
-      case X_AXIS: STATIC_ITEM(MSG_MOVE_X, SS_CENTER|SS_INVERT); break;
-      case Y_AXIS: STATIC_ITEM(MSG_MOVE_Y, SS_CENTER|SS_INVERT); break;
-      case Z_AXIS: STATIC_ITEM(MSG_MOVE_Z, SS_CENTER|SS_INVERT); break;
+      case X_AXIS: STATIC_ITEM(MSG_MOVE_X, true, true); break;
+      case Y_AXIS: STATIC_ITEM(MSG_MOVE_Y, true, true); break;
+      case Z_AXIS: STATIC_ITEM(MSG_MOVE_Z, true, true); break;
       default:
         #if ENABLED(MANUAL_E_MOVES_RELATIVE)
-          manual_move_e_origin = current_position.e;
+          manual_move_e_origin = current_position[E_AXIS];
         #endif
-        STATIC_ITEM(MSG_MOVE_E, SS_CENTER|SS_INVERT);
+        STATIC_ITEM(MSG_MOVE_E, true, true);
         break;
     }
   }
@@ -345,7 +345,7 @@ void menu_move() {
   ) {
     if (
       #if ENABLED(DELTA)
-        current_position.z <= delta_clip_start_height
+        current_position[Z_AXIS] <= delta_clip_start_height
       #else
         true
       #endif

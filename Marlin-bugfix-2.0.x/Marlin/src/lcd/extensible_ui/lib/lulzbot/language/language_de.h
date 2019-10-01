@@ -21,8 +21,10 @@
 
 #pragma once
 
+#include "language_en.h"
+
 namespace Language_de {
-  using namespace Language_en; // Inherit undefined strings from English
+  using namespace Language_en;
 
   PROGMEM Language_Str LANGUAGE                 = u8"Deutsche";
 
@@ -77,4 +79,6 @@ namespace Language_de {
 
   PROGMEM Language_Str PRINTER_HALTED           = u8"DRUCKER GESTOPPT";
   PROGMEM Language_Str PLEASE_RESET             = u8"Bitte neustarten";
+
+  MAKE_LANGUAGE_STRINGS();
 }; // namespace Language_de

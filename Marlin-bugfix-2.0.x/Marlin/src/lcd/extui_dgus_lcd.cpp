@@ -57,7 +57,7 @@ namespace ExtUI {
   void onPrintTimerStarted() {}
   void onPrintTimerPaused() {}
   void onPrintTimerStopped() {}
-  void onFilamentRunout(const extruder_t extruder) {}
+  void onFilamentRunout() {}
 
   void onUserConfirmRequired(const char *msg) {
     if (msg) {

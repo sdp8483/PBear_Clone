@@ -39,10 +39,10 @@
 
 #if HOTENDS <= 1
   #define HOTEND_INDEX  0
-  #define E_NAME
+  #define E_UNUSED() UNUSED(e)
 #else
   #define HOTEND_INDEX  e
-  #define E_NAME e
+  #define E_UNUSED()
 #endif
 
 // Identifiers for other heaters
@@ -304,15 +304,17 @@ class Temperature {
       static bool allow_cold_extrude;
       static int16_t extrude_min_temp;
       FORCE_INLINE static bool tooCold(const int16_t temp) { return allow_cold_extrude ? false : temp < extrude_min_temp; }
-      FORCE_INLINE static bool tooColdToExtrude(const uint8_t E_NAME) {
+      FORCE_INLINE static bool tooColdToExtrude(const uint8_t e) {
+        E_UNUSED();
         return tooCold(degHotend(HOTEND_INDEX));
       }
-      FORCE_INLINE static bool targetTooColdToExtrude(const uint8_t E_NAME) {
+      FORCE_INLINE static bool targetTooColdToExtrude(const uint8_t e) {
+        E_UNUSED();
         return tooCold(degTargetHotend(HOTEND_INDEX));
       }
     #else
-      FORCE_INLINE static bool tooColdToExtrude(const uint8_t) { return false; }
-      FORCE_INLINE static bool targetTooColdToExtrude(const uint8_t) { return false; }
+      FORCE_INLINE static bool tooColdToExtrude(const uint8_t e) { UNUSED(e); return false; }
+      FORCE_INLINE static bool targetTooColdToExtrude(const uint8_t e) { UNUSED(e); return false; }
     #endif
 
     FORCE_INLINE static bool hotEnoughToExtrude(const uint8_t e) { return !tooColdToExtrude(e); }
@@ -544,13 +546,16 @@ class Temperature {
      * Preheating hotends
      */
     #ifdef MILLISECONDS_PREHEAT_TIME
-      static bool is_preheating(const uint8_t E_NAME) {
+      static bool is_preheating(const uint8_t e) {
+        E_UNUSED();
         return preheat_end_time[HOTEND_INDEX] && PENDING(millis(), preheat_end_time[HOTEND_INDEX]);
       }
-      static void start_preheat_time(const uint8_t E_NAME) {
+      static void start_preheat_time(const uint8_t e) {
+        E_UNUSED();
         preheat_end_time[HOTEND_INDEX] = millis() + MILLISECONDS_PREHEAT_TIME;
       }
-      static void reset_preheat_time(const uint8_t E_NAME) {
+      static void reset_preheat_time(const uint8_t e) {
+        E_UNUSED();
         preheat_end_time[HOTEND_INDEX] = 0;
       }
     #else
@@ -561,36 +566,39 @@ class Temperature {
     //inline so that there is no performance decrease.
     //deg=degreeCelsius
 
-    FORCE_INLINE static float degHotend(const uint8_t E_NAME) {
-      return (0
-        #if HOTENDS
-          + temp_hotend[HOTEND_INDEX].celsius
-        #endif
-      );
+    FORCE_INLINE static float degHotend(const uint8_t e) {
+      E_UNUSED();
+      #if HOTENDS
+        return temp_hotend[HOTEND_INDEX].celsius;
+      #else
+        return 0;
+      #endif
     }
 
     #if ENABLED(SHOW_TEMP_ADC_VALUES)
-      FORCE_INLINE static int16_t rawHotendTemp(const uint8_t E_NAME) {
-        return (0
-          #if HOTENDS
-            + temp_hotend[HOTEND_INDEX].raw
-          #endif
-        );
+      FORCE_INLINE static int16_t rawHotendTemp(const uint8_t e) {
+        E_UNUSED();
+        #if HOTENDS
+          return temp_hotend[HOTEND_INDEX].raw;
+        #else
+          return 0;
+        #endif
       }
     #endif
 
-    FORCE_INLINE static int16_t degTargetHotend(const uint8_t E_NAME) {
-      return (0
-        #if HOTENDS
-          + temp_hotend[HOTEND_INDEX].target
-        #endif
-      );
+    FORCE_INLINE static int16_t degTargetHotend(const uint8_t e) {
+      E_UNUSED();
+      #if HOTENDS
+        return temp_hotend[HOTEND_INDEX].target;
+      #else
+        return 0;
+      #endif
     }
 
     #if WATCH_HOTENDS
       static void start_watching_hotend(const uint8_t e=0);
     #else
-      static inline void start_watching_hotend(const uint8_t=0) {}
+      static inline void start_watching_hotend(const uint8_t e=0) { UNUSED(e); }
     #endif
 
     #if HOTENDS
@@ -604,7 +612,8 @@ class Temperature {
         static inline void start_watching_E5() { start_watching_hotend(5); }
       #endif
 
-      static void setTargetHotend(const int16_t celsius, const uint8_t E_NAME) {
+      static void setTargetHotend(const int16_t celsius, const uint8_t e) {
+        E_UNUSED();
         const uint8_t ee = HOTEND_INDEX;
         #ifdef MILLISECONDS_PREHEAT_TIME
           if (celsius == 0)
@@ -619,11 +628,13 @@ class Temperature {
         start_watching_hotend(ee);
       }
 
-      FORCE_INLINE static bool isHeatingHotend(const uint8_t E_NAME) {
+      FORCE_INLINE static bool isHeatingHotend(const uint8_t e) {
+        E_UNUSED();
         return temp_hotend[HOTEND_INDEX].target > temp_hotend[HOTEND_INDEX].celsius;
       }
 
-      FORCE_INLINE static bool isCoolingHotend(const uint8_t E_NAME) {
+      FORCE_INLINE static bool isCoolingHotend(const uint8_t e) {
+        E_UNUSED();
         return temp_hotend[HOTEND_INDEX].target < temp_hotend[HOTEND_INDEX].celsius;
       }
 
@@ -754,7 +765,8 @@ class Temperature {
 
     #if HEATER_IDLE_HANDLER
 
-      static void reset_heater_idle_timer(const uint8_t E_NAME) {
+      static void reset_heater_idle_timer(const uint8_t e) {
+        E_UNUSED();
         hotend_idle[HOTEND_INDEX].reset();
         start_watching_hotend(HOTEND_INDEX);
       }
