@@ -906,10 +906,9 @@
  *   (0,0)
  *  Specify a Probe position as { X, Y, Z }
  */
-//#define X_PROBE_OFFSET_FROM_EXTRUDER 22      // X offset: -left  +right  [of the nozzle]
-//#define Y_PROBE_OFFSET_FROM_EXTRUDER 4       // Y offset: -front +behind [the nozzle]
-//#define Z_PROBE_OFFSET_FROM_EXTRUDER -1.06   // Z offset: -below +above  [the nozzle]
-#define NOZZLE_TO_PROBE_OFFSET { 22, 4, -1.06 }
+#define X_PROBE_OFFSET_FROM_EXTRUDER 22      // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 4       // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER -1.06   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 4

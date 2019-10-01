@@ -3,7 +3,6 @@ use <../parts/enclosure_back.scad>
 use <../parts/enclosure_front.scad>
 use <../parts/extruder_clamp.scad>
 use <../parts/y_clamp.scad>
-use <../parts/fan_guard.scad>
 use <../vitamins/skrV13.scad>
 use <../vitamins/fan.scad>
 use <../vitamins/fasteners.scad>
@@ -19,10 +18,7 @@ module enclosure() {
     translate([0,pcb_w+y_clearance,wall_height+2])rotate([180,0,0])enclosure_front();
 
     // 80mm fan
-    translate([((pcb_l+x_clearance)/2)+10,40,wall_height+2]){
-        fan_80mm();
-        translate([0,0,25.01])fan_guard();
-    }
+    translate([((pcb_l+x_clearance)/2)+10,40,wall_height+2])fan_80mm();
 
     // enclosure screws
     translate([0,0,wall_height+2])plastic_screw();
