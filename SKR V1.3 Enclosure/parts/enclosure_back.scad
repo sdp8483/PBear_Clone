@@ -103,9 +103,9 @@ module extruder_cable_holder() {
 
     // overhang print support
     mirror([1,0,0]) {
-        translate([(28/2)-0.5,3,4])rotate([90,0,0]) {
+        translate([(28/2)-0.5,3,3])rotate([90,0,0]) {
             linear_extrude(height=6){
-                polygon([[0,0], [8,0], [0,8]]);
+                polygon([[0,0], [9,0], [0,9]]);
             }
         }
     }
