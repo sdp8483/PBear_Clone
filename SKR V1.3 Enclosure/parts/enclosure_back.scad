@@ -131,6 +131,12 @@ module y_cable_holder() {
         mirror([0,1,0])translate([-1,-1,0])nut_slot();
         translate([-1,-1,12])mirror([0,0,1])nut_slot();
     }
+
+    // overhang print support
+    hull() {
+        translate([-14,-3,11])cube([1,6,1]);
+        translate([-13-10,-3,0])cube([10,6,1]);
+    }
 }
 
 module cable_tie_anchors() {
