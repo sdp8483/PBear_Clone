@@ -2,8 +2,15 @@ include <../settings/dimensions.scad>
 
 module m3_bolt_hole() {
     translate([-(5.55/2),(28/2)-(5.55/2)-1,(-10/2)+(5.55/2)+((9/2)+10-2.5)]) {
-        rotate([0,270,0])cylinder(h=25,d=m3_clearance_dia, center=true);
-        rotate([0,270,0])cylinder(h=10, d=5.75);
+        rotate([0,270,0]) {
+            cylinder(h=25,d=m3_clearance_dia, center=true);
+            hull() {
+                cylinder(h=10, d=5.75);
+                translate([-5.75/2, 9, 0])cube([1,1,10]);
+                translate([9, -5.75/2, 0])cube([1,1,10]);
+                translate([9, 9, 0])cube([1,1,10]);
+            }
+        }
     }
 }
 
@@ -38,6 +45,9 @@ module extruder_clamp() {
 
         // cut off some of the back
         translate([-27.8,-20,-1])cube([20,40,20]);
+
+        // clean up around coutersink
+        translate([-14.5,-19,7.2])cube([10,10,10]);
     }
 
     // cable ribbing for grip
