@@ -156,7 +156,7 @@ module enclosure_body() {
     union() {
         difference() {
             union() {
-                cube([pcb_l+x_clearance,pcb_w+y_clearance,7]);
+                cube([pcb_l+x_clearance,pcb_w+y_clearance,5]);
 
                 // upper mount
                 translate([20-4,pcb_w+y_clearance,0]) {
@@ -174,7 +174,7 @@ module enclosure_body() {
 
                 // PCB standoffs
                 for (pos=pcb_mnt_pattern) {
-                    translate([pos.x+x_clearance,pos.y+((pcb_w-hole_y_spacing)/2),7])cylinder(h=2.5,d=6);
+                    translate([pos.x+x_clearance,pos.y+((pcb_w-hole_y_spacing)/2),5])cylinder(h=4.5,d=6);
                 }
             }
 
@@ -185,8 +185,8 @@ module enclosure_body() {
 
             // M3 hex nut inserts
             for (pos=pcb_mnt_pattern) {
-                translate([pos.x+x_clearance,pos.y+((pcb_w-hole_y_spacing)/2),-1])cylinder_outer(height=5,radius=5.5/2,fn=6);
-                translate([pos.x+x_clearance,pos.y+((pcb_w-hole_y_spacing)/2),-1])cylinder_outer(height=2,radius=5.7/2,fn=6);
+                translate([pos.x+x_clearance,pos.y+((pcb_w-hole_y_spacing)/2),-1])cylinder_outer(height=5,radius=5.7/2,fn=6);
+                translate([pos.x+x_clearance,pos.y+((pcb_w-hole_y_spacing)/2),-1])cylinder_outer(height=2,radius=6.2/2,fn=6);
             }
         }
 
@@ -247,7 +247,7 @@ module enclosure_body() {
     }*/
     // base cable tie anchors
     for (i=[10:30:pcb_w+y_clearance]) {
-        translate([x_clearance/2,i,8])rotate([0,270,0])cable_tie_anchors();
+        translate([x_clearance/2,i,5])rotate([0,270,0])cable_tie_anchors();
     }
 }
 
@@ -293,6 +293,9 @@ module enclosure_back() {
         translate([pcb_l+x_clearance,0,wall_height-20])cylinder(h=21, d=3);
         translate([0,pcb_w+y_clearance,wall_height-20])cylinder(h=21, d=3);
         translate([pcb_l+x_clearance,pcb_w+y_clearance,wall_height-20])cylinder(h=21, d=3);
+
+        // thin bottom
+        translate([20,10,1.8])cube([110,65,8]);
     }
 
 }
