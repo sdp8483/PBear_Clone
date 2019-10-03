@@ -30,6 +30,9 @@ module enclosure_front() {
                 }
                 translate([3,3,1.8])cube([34,82,5]);
 
+                // extruder cable clamp notch
+                translate([-1,36.9,2])cube([5,20,3]);
+
             }
 
             // Vent horizontal support bar
