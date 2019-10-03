@@ -24,9 +24,6 @@ module enclosure_front() {
                     fancut_80mm(depth=6);
                 }
 
-                // X axis cable entry
-                //translate([125,(8.5/2)+1,-1])cylinder(h=6, d=8.5, $fn=8);
-
                 // Vents
                 for (i=[5:5:80]) {
                     translate([5,i,-1])cube([30,3,10]);
