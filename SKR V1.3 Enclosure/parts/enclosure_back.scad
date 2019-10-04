@@ -263,6 +263,9 @@ module enclosure_back() {
 
         // thin bottom
         translate([20,10,1.8])cube([110,65,8]);
+
+        // trim y cable grip so pcb will fit
+        translate([80,1.5,15])cube([40,5,20]);
     }
 
 }
