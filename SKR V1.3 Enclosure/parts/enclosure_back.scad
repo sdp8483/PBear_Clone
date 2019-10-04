@@ -139,19 +139,6 @@ module y_cable_holder() {
     }
 }
 
-module cable_tie_anchors() {
-    difference() {
-        // main body
-        translate([0,2.5,0]) {
-            rotate([90,0,0])linear_extrude(height=5)polygon([[0,-2.5],[3,-0.5],[3,2],[0,3]]);
-        }
-
-        // tie holes
-        translate([0.5,-1.5,0])cube([1.5,3,5]);
-        translate([0.5,-1.5,0])cube([10,3,1.5]);
-    }
-}
-
 module enclosure_body() {
     union() {
         difference() {
@@ -229,26 +216,6 @@ module enclosure_body() {
 
     // stepper driver side wall
     translate([-4,pcb_w+y_clearance,0])cube([pcb_l+x_clearance+4+4,4,wall_height]);
-
-    // upper wall cable tie anchors
-    translate([0,20,25])cable_tie_anchors();
-    translate([0,70,25])cable_tie_anchors();
-    // stepper driver wall cable tie anchors
-    for (i=[20:30:pcb_l+x_clearance-20]) {
-        translate([i,pcb_w+y_clearance,25])rotate(270)cable_tie_anchors();
-    }
-    // usb wall cable tie anchors
-    for (i=[36:30:pcb_l+x_clearance]) {
-        translate([i,0,25])rotate(90)cable_tie_anchors();
-    }
-    /*// bottom wall cable tie anchors
-    for (i=[15:30:pcb_w+y_clearance]) {
-        translate([pcb_l+x_clearance,i,25])rotate(180)cable_tie_anchors();
-    }*/
-    // base cable tie anchors
-    for (i=[10:30:pcb_w+y_clearance]) {
-        translate([x_clearance/2,i,5])rotate([0,270,0])cable_tie_anchors();
-    }
 }
 
 module enclosure_chamfered() {
