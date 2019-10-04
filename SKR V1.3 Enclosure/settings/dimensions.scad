@@ -27,6 +27,6 @@ tmc_offset_from_pcb = 11.05;
 // Global Enclosure Settings
 pcb_mnt_pattern = [[0,0],[hole_x_spacing,0],[0,hole_y_spacing],[hole_x_spacing,hole_y_spacing]];
 x_clearance = 25;
-y_clearance = 3;
+y_clearance = 15;
 m3_clearance_dia = 3.2;
 wall_height = 38;
