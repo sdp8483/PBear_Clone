@@ -4,7 +4,7 @@ use <pb_frame.scad>
 
 pb_frame();
 
-translate([12,47,200])rotate([0,90,270])enclosure();
+translate([15-y_clearance,47,200])rotate([0,90,270])enclosure();
 
 // X stepper movment zone
 color("Red", alpha=0.5) {
