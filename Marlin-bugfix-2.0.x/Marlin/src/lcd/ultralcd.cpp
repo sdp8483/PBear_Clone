@@ -44,7 +44,7 @@
 #if HAS_SPI_LCD
   #if ENABLED(STATUS_MESSAGE_SCROLLING)
     uint8_t MarlinUI::status_scroll_offset; // = 0
-    constexpr uint8_t MAX_MESSAGE_LENGTH = max(LONG_FILENAME_LENGTH, MAX_LANG_CHARSIZE * 2 * (LCD_WIDTH));
+    constexpr uint8_t MAX_MESSAGE_LENGTH = _MAX(LONG_FILENAME_LENGTH, MAX_LANG_CHARSIZE * 2 * (LCD_WIDTH));
   #else
     constexpr uint8_t MAX_MESSAGE_LENGTH = MAX_LANG_CHARSIZE * (LCD_WIDTH);
   #endif
@@ -137,7 +137,7 @@ millis_t MarlinUI::next_button_update_ms; // = 0
 
 // Encoder Handling
 #if HAS_ENCODER_ACTION
-  uint16_t MarlinUI::encoderPosition;
+  uint32_t MarlinUI::encoderPosition;
   volatile int8_t encoderDiff; // Updated in update_buttons, added to encoderPosition every LCD update
 #endif
 
@@ -293,6 +293,10 @@ void MarlinUI::init() {
     #endif
     #if BUTTON_EXISTS(ENC)
       SET_INPUT_PULLUP(BTN_ENC);
+    #endif
+
+    #if BUTTON_EXISTS(BACK)
+      SET_INPUT_PULLUP(BTN_BACK);
     #endif
 
     #if BUTTON_EXISTS(UP)

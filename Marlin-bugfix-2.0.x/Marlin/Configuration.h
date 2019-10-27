@@ -36,8 +36,8 @@
  * Advanced settings can be found in Configuration_adv.h
  *
  */
-// Marlin source downloaded October 12, 2019
-//   commit 59378db7de0dec95d9c9fba6bcefc1c523ad6ef2
+// Marlin source downloaded 27 October 2019
+//    commit 9720d21301e65ab801c9db8faba23f211c3de3ea
 #define CONFIGURATION_H_VERSION 020000
 
 //===========================================================================
@@ -74,6 +74,7 @@
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(Sam Perry)" // Who made the changes.
+//#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
  * *** VENDORS PLEASE READ ***
