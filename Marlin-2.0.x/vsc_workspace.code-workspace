@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "/home/sam/Documents/GitHub/PBear_Clone/Marlin-2.0.5.3"
 		}
 	],
 	"settings": {}
